@@ -1,0 +1,11 @@
+{
+  "name": "albion-price",
+  "version": "0.1.0",
+  "description": "Albion Online Stocks API",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Dmitry Andreev <shaggydmitrydev@gmail.com>",
+  "license": "ISC"
+}
