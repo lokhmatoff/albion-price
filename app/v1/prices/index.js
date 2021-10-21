@@ -6,6 +6,7 @@ router.get('/', validator, async (request, response) => {
     const { codes } = request.query;
     const data = await service.fetch(codes);
 
+    if (data.error) response.status(500);
     return response.send(data);
 });
 

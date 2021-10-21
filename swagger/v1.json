@@ -1,0 +1,430 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "REST API for in-game items' prices in Albion Online RPG.<br> [View on **Github** &rarr;](https://github.com/lokhmatoff/albion-price)<br> [Contact me in **Telegram** &rarr;](https://t.me/lokhmatoff)\n",
+    "version": "1.0.0",
+    "title": "Albion Price API",
+    "contact": {
+      "name": "Lokhmatoff"
+    }
+  },
+  "servers": [
+    {
+      "url": "lf-albion-price.herokuapp.com/v1",
+      "description": "Production instance"
+    }
+  ],
+  "paths": {
+    "/items": {
+      "get": {
+        "summary": "Get all in-game items",
+        "tags": [
+          "Items"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessItemsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error: no allowed query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service fetch error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/prices": {
+      "get": {
+        "summary": "Get items' prices by their codes",
+        "tags": [
+          "Prices"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "codes",
+            "description": "Array or comma separated list of codes (eg: T1_BAG,T2_BAG)",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessPricesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation errors: no required \"codes\" parameter or wrong \"codes\" type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "414": {
+            "description": "Validation error: too many \"codes\" provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooLongUriError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service fetch error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Item": {
+        "type": "object",
+        "properties": {
+          "LocalizationNameVariable": {
+            "type": "string",
+            "example": "@ITEMS_T5_FARM_CABBAGE_SEED"
+          },
+          "LocalizationDescriptionVariable": {
+            "type": "string",
+            "example": "@ITEMS_T5_FARM_CABBAGE_SEED_DESC"
+          },
+          "LocalizedNames": {
+            "type": "object",
+            "properties": {
+              "EN-US": {
+                "type": "string",
+                "example": "Cabbage Seeds"
+              },
+              "DE-DE": {
+                "type": "string",
+                "example": "Kohlsamen"
+              },
+              "FR-FR": {
+                "type": "string",
+                "example": "Graines de chou"
+              },
+              "RU-RU": {
+                "type": "string",
+                "example": "Семена капусты"
+              },
+              "PL-PL": {
+                "type": "string",
+                "example": "Nasiona Kapusty"
+              },
+              "ES-ES": {
+                "type": "string",
+                "example": "Semillas de col"
+              },
+              "PT-BR": {
+                "type": "string",
+                "example": "Sementes de Repolho"
+              },
+              "ZH-CN": {
+                "type": "string",
+                "example": "白菜种子"
+              },
+              "KO-KR": {
+                "type": "string",
+                "example": "양배추 씨앗"
+              }
+            }
+          },
+          "LocalizedDescriptions": {
+            "type": "object",
+            "properties": {
+              "EN-US": {
+                "type": "string",
+                "example": "Cabbage Seeds are used to plant a patch of Cabbages."
+              },
+              "DE-DE": {
+                "type": "string",
+                "example": "Kohlsamen dienen dazu, ein Kohlbeet zu pflanzen."
+              },
+              "FR-FR": {
+                "type": "string",
+                "example": "Les graines de chou font pousser des carrés de choux"
+              },
+              "RU-RU": {
+                "type": "string",
+                "example": "Засейте семенами поле и вырастите капусту."
+              },
+              "PL-PL": {
+                "type": "string",
+                "example": "Nasiona kapusty są używane do sadzenia kapusty."
+              },
+              "ES-ES": {
+                "type": "string",
+                "example": "Con semillas de col se plantan terrenos de col"
+              },
+              "PT-BR": {
+                "type": "string",
+                "example": "Sementes de Repolho são usadas para plantar canteiros de Repolhos"
+              },
+              "ZH-CN": {
+                "type": "string",
+                "example": "白菜种子用于种植白菜。"
+              },
+              "KO-KR": {
+                "type": "string",
+                "example": "양배추 씨앗은 양배추 밭을 재배하는 데 사용됩니다."
+              }
+            }
+          },
+          "Index": {
+            "type": "string",
+            "format": "numeric",
+            "example": "6"
+          },
+          "UniqueName": {
+            "type": "string",
+            "example": "T5_FARM_CABBAGE_SEED"
+          }
+        },
+        "required": [
+          "LocalizationNameVariable",
+          "LocalizationDescriptionVariable",
+          "LocalizedNames",
+          "LocalizedDescriptions",
+          "Index",
+          "UniqueName"
+        ]
+      },
+      "Price": {
+        "type": "object",
+        "properties": {
+          "item_id": {
+            "type": "string",
+            "example": "T2_BAG"
+          },
+          "city": {
+            "type": "string",
+            "example": "Black Market"
+          },
+          "quality": {
+            "type": "number",
+            "example": 1
+          },
+          "sell_price_min": {
+            "type": "number",
+            "example": 864
+          },
+          "sell_price_min_date": {
+            "type": "string",
+            "format": "datetime",
+            "example": "2021-10-21T17:40:00"
+          },
+          "sell_price_max": {
+            "type": "number",
+            "example": 1000
+          },
+          "sell_price_max_date": {
+            "type": "string",
+            "format": "datetime",
+            "example": "2021-10-21T17:40:00"
+          },
+          "buy_price_min": {
+            "type": "number",
+            "example": 444
+          },
+          "buy_price_min_date": {
+            "type": "string",
+            "format": "datetime",
+            "example": "2021-10-21T17:40:00"
+          },
+          "buy_price_max": {
+            "type": "number",
+            "example": 851
+          },
+          "buy_price_max_date": {
+            "type": "string",
+            "format": "datetime",
+            "example": "2021-10-21T17:40:00"
+          }
+        },
+        "required": [
+          "item_id",
+          "city",
+          "quality",
+          "sell_price_min",
+          "sell_price_min_date",
+          "sell_price_max",
+          "sell_price_max_date",
+          "buy_price_min",
+          "buy_price_min_date",
+          "buy_price_max",
+          "buy_price_max_date"
+        ]
+      },
+      "SuccessItemsResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/Item"
+                }
+              ]
+            }
+          },
+          "error": {
+            "type": "string",
+            "example": null,
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "SuccessPricesResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "oneOf": [
+                {
+                  "$ref": "#/components/schemas/Price"
+                }
+              ]
+            }
+          },
+          "error": {
+            "type": "string",
+            "example": null,
+            "nullable": true
+          }
+        },
+        "required": [
+          "success",
+          "data"
+        ]
+      },
+      "TooLongUriError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "data": {
+            "type": "string",
+            "example": null,
+            "nullable": true
+          },
+          "error": {
+            "type": "string",
+            "example": "ValidationError: Too many \"codes\" provided."
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "error"
+        ]
+      },
+      "BadRequestError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "data": {
+            "type": "string",
+            "example": null,
+            "nullable": true
+          },
+          "error": {
+            "type": "string",
+            "example": "ValidationError: GET param \"codes\" must be an array of codes."
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "error"
+        ]
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "data": {
+            "type": "string",
+            "example": null,
+            "nullable": true
+          },
+          "error": {
+            "type": "string",
+            "example": "Fetch error: cannot connect \"prices\" service"
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "error"
+        ]
+      }
+    }
+  }
+}

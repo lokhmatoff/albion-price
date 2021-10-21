@@ -7,7 +7,11 @@ const ItemsService = {
     _cache: [],
     fetch() {
         if (this._cache.length) {
-            return Promise.resolve(this._cache);
+            return Promise.resolve({
+                success: true,
+                data: this._cache,
+                error: null,
+            });
         }
 
         return axios.get(itemsResource)
@@ -16,10 +20,13 @@ const ItemsService = {
                 return {
                     success: true,
                     data,
+                    error: null,
                 }
             })
             .catch(error => ({
-                success: false, ...error
+                success: false,
+                data: null,
+                error,
             }));
     },
     clear() {
