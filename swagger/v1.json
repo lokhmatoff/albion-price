@@ -5,20 +5,121 @@
     "version": "1.0.0",
     "title": "Albion Price API",
     "contact": {
-      "name": "Lokhmatoff",
-      "email": "shaggydmitrydev@gmail.com"
+      "name": "Lokhmatoff"
     }
   },
   "servers": [
-    {
-      "url": "localhost:3000/v1",
-      "description": "Local server (use Node or Docker)"
-    },
     {
       "url": "lf-albion-price.herokuapp.com/v1",
       "description": "Production instance"
     }
   ],
+  "paths": {
+    "/items": {
+      "get": {
+        "summary": "Get all in-game items",
+        "tags": [
+          "Items"
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessItemsResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation error: no allowed query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service fetch error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/prices": {
+      "get": {
+        "summary": "Get items' prices by their codes",
+        "tags": [
+          "Prices"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "codes",
+            "description": "Array or comma separated list of codes (eg: T1_BAG,T2_BAG)",
+            "required": true,
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SuccessPricesResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Validation errors: no required \"codes\" parameter or wrong \"codes\" type",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BadRequestError"
+                }
+              }
+            }
+          },
+          "414": {
+            "description": "Validation error: too many \"codes\" provided",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TooLongUriError"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Service fetch error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InternalServerError"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
   "components": {
     "schemas": {
       "Item": {
@@ -218,6 +319,7 @@
           },
           "error": {
             "type": "string",
+            "example": null,
             "nullable": true
           }
         },
@@ -245,6 +347,7 @@
           },
           "error": {
             "type": "string",
+            "example": null,
             "nullable": true
           }
         },
@@ -261,17 +364,8 @@
             "example": false
           },
           "data": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/Item"
-                },
-                {
-                  "$ref": "#/components/schemas/Price"
-                }
-              ]
-            },
+            "type": "string",
+            "example": null,
             "nullable": true
           },
           "error": {
@@ -293,22 +387,36 @@
             "example": false
           },
           "data": {
-            "type": "array",
-            "items": {
-              "oneOf": [
-                {
-                  "$ref": "#/components/schemas/Item"
-                },
-                {
-                  "$ref": "#/components/schemas/Price"
-                }
-              ]
-            },
+            "type": "string",
+            "example": null,
             "nullable": true
           },
           "error": {
             "type": "string",
             "example": "ValidationError: GET param \"codes\" must be an array of codes."
+          }
+        },
+        "required": [
+          "success",
+          "data",
+          "error"
+        ]
+      },
+      "InternalServerError": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "data": {
+            "type": "string",
+            "example": null,
+            "nullable": true
+          },
+          "error": {
+            "type": "string",
+            "example": "Fetch error: cannot connect \"prices\" service"
           }
         },
         "required": [

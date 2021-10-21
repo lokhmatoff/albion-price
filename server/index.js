@@ -2,13 +2,11 @@ const express = require('express');
 const app = express();
 
 const swagger = require('./swagger');
-const items = require('../app/items');
-const prices = require('../app/prices');
+const apiV1 = require('../app/v1');
 
 // Middlewares
 app.use(express.json());
 app.use('/', swagger);
-app.use('/items', items);
-app.use('/prices', prices);
+app.use('/v1', apiV1);
 
 app.listen(3000);

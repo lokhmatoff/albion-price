@@ -21,7 +21,11 @@ const PricesService = {
     _operations: 0,
     fetch(codes) {
         if (this._cache[codes]) {
-            return Promise.resolve(this._cache[codes]);
+            return Promise.resolve({
+                success: true,
+                data: this._cache[codes],
+                error: null,
+            });
         }
 
         if (this._operations === 10) {
@@ -35,10 +39,12 @@ const PricesService = {
                 return {
                     success: true,
                     data,
+                    error: null,
                 };
             })
             .catch(error => ({
                 success: false,
+                data: null,
                 ...error
             }))
             .finally(() => {

@@ -1,8 +1,9 @@
 const validator = (request, response, next) => {
     if (Object.keys(request.query).length > 0) {
-        return response.status(422).send({
+        return response.status(400).send({
             success: false,
-            message: 'ValidationError: no GET parameters allowed.',
+            data: null,
+            error: 'ValidationError: no GET parameters allowed.',
         });
     }
 
