@@ -5,10 +5,15 @@
     "version": "1.0.0",
     "title": "Albion Price API",
     "contact": {
-      "name": "Lokhmatoff"
+      "name": "Lokhmatoff",
+      "email": "shaggydmitrydev@gmail.com"
     }
   },
   "servers": [
+    {
+      "url": "localhost:3000/v1",
+      "description": "Local server (use Node or Docker)"
+    },
     {
       "url": "lf-albion-price.herokuapp.com/v1",
       "description": "Production instance"
@@ -248,7 +253,7 @@
           "data"
         ]
       },
-      "ErrorTooLongUriResponse": {
+      "TooLongUriError": {
         "type": "object",
         "properties": {
           "success": {
@@ -280,7 +285,7 @@
           "error"
         ]
       },
-      "ErrorBadRequestResponse": {
+      "BadRequestError": {
         "type": "object",
         "properties": {
           "success": {
