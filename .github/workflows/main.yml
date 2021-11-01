@@ -16,3 +16,4 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "lf-albion-price-dev"
           heroku_email: "shaggydmitrydev@gmail.com"
+          usedocker: true
