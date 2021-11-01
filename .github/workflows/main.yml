@@ -12,6 +12,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: akhileshns/heroku-deploy@v3.12.12
         with:
+          branch: develop
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: "lf-albion-price-dev"
           heroku_email: "shaggydmitrydev@gmail.com"
